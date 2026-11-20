@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="zh-CN" data-look="mono">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'; script-src 'sha256-aZXmJ+dv7vmRTT0B43PMYLIxRR3pswwa29PPJgCjzlA=' 'sha256-eq8aVwZYnHuRAqPS/mKBG7Xm9MuLItG4mGJ/ASpko5M=' 'sha256-l22PmB8fqKDiQvXcDKh2F6NcjR7X3wmKsqEG52GOVkA=' 'sha256-K6C2kXSTfSaG3XU7TMOAZN/Jhm4Tvh+nveuWcwTKH78='">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="data:,">
+<title>Oracle 上手问答</title>
+<script>try{var m=/[?&]scheme=(light|dark)(&|$)/.exec(location.search);if(m)document.documentElement.setAttribute("data-scheme",m[1])}catch(e){}</script>
+<style>
+/* 外观：默认彩色；构建时给 html 加 data-look="mono" 就是黑白版。
+   深浅色跟随系统；地址后加 ?scheme=light 或 ?scheme=dark 可以强制（对比页用）。 */
+:root{
+  --bg:#EFE9DF;--surface:#FFFDFA;--ink:#25201B;--muted:#6B6056;--line:#E0D6C8;--rule:#E0D6C8;
+  --accent:#A9481F;--accent-ink:#FFFFFF;--me:#2B2520;--me-ink:#FBF7F1;--focus:#2F6399;
+  --ok:#2A6C47;--info:#2F6399;--warn:#865309;--stop:#A8322D;
+  --lift:0 1px 0 rgba(70,48,25,.10);
+  --r:18px;--r-tail:6px;--r-ctl:12px;--r-card:16px;--r-av:50%;--r-box:6px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  --display:var(--sans);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-scheme=light]){
+  --bg:#171411;--surface:#25211D;--ink:#F1EAE1;--muted:#ADA092;--line:#3A332C;--rule:#3A332C;
+  --accent:#E3825B;--accent-ink:#1A1512;--me:#EDE5DA;--me-ink:#1A1512;--focus:#93BBE8;
+  --ok:#86CFA2;--info:#93BBE8;--warn:#E9B867;--stop:#F09189;--lift:none;
+  color-scheme:dark;
+}}
+:root[data-scheme=dark]{
+  --bg:#171411;--surface:#25211D;--ink:#F1EAE1;--muted:#ADA092;--line:#3A332C;--rule:#3A332C;
+  --accent:#E3825B;--accent-ink:#1A1512;--me:#EDE5DA;--me-ink:#1A1512;--focus:#93BBE8;
+  --ok:#86CFA2;--info:#93BBE8;--warn:#E9B867;--stop:#F09189;--lift:none;
+  color-scheme:dark;
+}
+/* 黑白版：同一套结构，换掉色板、圆角和几处排版 */
+:root[data-look=mono]{
+  --bg:#FFFFFF;--surface:#FFFFFF;--ink:#0A0A0A;--muted:#6B6B6B;--line:#E2E2E2;--rule:#0A0A0A;
+  --accent:#0A0A0A;--accent-ink:#FFFFFF;--me:#0A0A0A;--me-ink:#FFFFFF;--focus:#0A0A0A;
+  --ok:#0A0A0A;--info:#0A0A0A;--warn:#0A0A0A;--stop:#0A0A0A;--lift:none;
+  --r:0;--r-tail:0;--r-ctl:0;--r-card:0;--r-av:0;--r-box:0;
+  --display:Didot,"Bodoni 72","Bodoni MT",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root[data-look=mono]:not([data-scheme=light]){
+  --bg:#0A0A0A;--surface:#0A0A0A;--ink:#F2F2F2;--muted:#9B9B9B;--line:#2A2A2A;--rule:#F2F2F2;
+  --accent:#F2F2F2;--accent-ink:#0A0A0A;--me:#F2F2F2;--me-ink:#0A0A0A;--focus:#F2F2F2;
+  --ok:#F2F2F2;--info:#F2F2F2;--warn:#F2F2F2;--stop:#F2F2F2;
+  color-scheme:dark;
+}}
+:root[data-look=mono][data-scheme=dark]{
+  --bg:#0A0A0A;--surface:#0A0A0A;--ink:#F2F2F2;--muted:#9B9B9B;--line:#2A2A2A;--rule:#F2F2F2;
+  --accent:#F2F2F2;--accent-ink:#0A0A0A;--me:#F2F2F2;--me-ink:#0A0A0A;--focus:#F2F2F2;
+  --ok:#F2F2F2;--info:#F2F2F2;--warn:#F2F2F2;--stop:#F2F2F2;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+p{margin:0}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+.app{max-width:560px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;
+  padding:calc(10px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));
+  background:var(--bg);border-bottom:1px solid var(--line)}
+.av{flex:none;width:36px;height:36px;border-radius:var(--r-av);background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:600;font-size:16px}
+.who{flex:1;min-width:0}
+.who b{display:block;font-size:16px;font-weight:600;line-height:1.3}
+.who>span{display:block;font-size:13px;line-height:1.45;color:var(--muted)}
+.nw{white-space:nowrap}
+.restart{flex:none;min-height:44px;min-width:44px;padding:0 2px 0 10px;border:0;background:none;color:var(--muted);font-size:14px;cursor:pointer}
+.restart[data-arm]{color:var(--stop);font-weight:600}
+
+main{flex:1;padding:14px max(16px,env(safe-area-inset-right)) 18px max(16px,env(safe-area-inset-left))}
+.msg{display:flex;margin:8px 0}
+.msg.ask{margin-top:18px}
+.bubble{max-width:86%;padding:10px 14px;border-radius:var(--r);background:var(--surface);box-shadow:var(--lift);overflow-wrap:anywhere}
+.bubble p+p{margin-top:6px}
+.bot .bubble{border-top-left-radius:var(--r-tail)}
+.bubble.wide{max-width:100%;width:100%}
+.bubble.bare{padding:0;background:none;box-shadow:none}
+.me{justify-content:flex-end}
+.me .bubble{display:flex;align-items:baseline;gap:10px;border:0;background:var(--me);color:var(--me-ink);border-top-right-radius:var(--r-tail);box-shadow:none;text-align:left;cursor:pointer}
+.me .edit{flex:none;font-size:12px;opacity:.75;text-decoration:underline;text-underline-offset:3px}
+.step{font-size:12px;color:var(--muted);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.q{margin-top:2px;font-weight:600;font-size:17px;line-height:1.45}
+.hint{margin-top:6px;color:var(--muted);font-size:14px;line-height:1.6}
+.tl{font-weight:650;color:var(--c);margin-right:6px}
+.t-ok{--c:var(--ok)}.t-info{--c:var(--info)}.t-warn{--c:var(--warn)}.t-stop{--c:var(--stop)}
+.tag{display:inline-block;margin-left:6px;padding:0 6px;font-size:11px;font-weight:500;line-height:18px;letter-spacing:.02em;
+  color:var(--muted);border:1px solid var(--line);border-radius:4px;vertical-align:2px;white-space:nowrap}
+.tag.official{color:var(--info)}
+h3{margin:0 0 4px;font-size:16px;font-weight:600;line-height:1.45}
+ol,ul{margin:6px 0 2px;padding-left:20px}
+li{margin:3px 0}
+
+details.rd{margin-top:10px;border-top:1px solid var(--line)}
+details.rd summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:44px;font-weight:600;color:var(--accent)}
+details.rd summary::-webkit-details-marker{display:none}
+details.rd summary::after{content:"";width:6px;height:6px;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+details.rd[open] summary::after{transform:translateY(1px) rotate(-135deg)}
+.rules{list-style:none;margin:0 0 4px;padding:0;counter-reset:r}
+.rules li{counter-increment:r;display:grid;grid-template-columns:20px 1fr;gap:6px;margin:0;padding:8px 0;border-top:1px solid var(--line)}
+.rules li::before{content:counter(r);font-weight:650;color:var(--accent);font-variant-numeric:tabular-nums}
+.rules b{font-weight:600}
+.rules .d{display:block;color:var(--muted);font-size:14px}
+
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.check input{appearance:none;-webkit-appearance:none;flex:none;width:22px;height:22px;margin:2px 0 0;border:1.5px solid var(--muted);border-radius:var(--r-box);display:grid;place-items:center;background:var(--surface);cursor:pointer}
+.check input:checked{background:var(--ink);border-color:var(--ink)}
+.check input:checked::after{content:"";width:5px;height:10px;border:solid var(--surface);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.check b{font-weight:600}
+.check .cd{display:block;font-size:14px;color:var(--muted)}
+.count{margin-top:2px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden}
+.card-h{padding:16px 18px 14px;border-bottom:1px solid var(--line)}
+.card-m{display:flex;justify-content:space-between;gap:12px;font-size:12px;letter-spacing:.04em;color:var(--muted);font-variant-numeric:tabular-nums}
+.card-h b{display:block;margin-top:6px;font-size:20px;font-weight:650;line-height:1.35}
+.verdict{margin-top:8px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--c)}
+.verdict::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.rows{list-style:none;margin:0;padding:2px 18px}
+.rows li{display:grid;grid-template-columns:5.6em minmax(0,1fr) auto;gap:12px;align-items:baseline;margin:0;padding:10px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.5}
+.rows li:first-child{border-top:0}
+.rows .k{color:var(--muted);font-size:14px}
+.rows .w{font-size:13px;font-weight:600;color:var(--c);white-space:nowrap}
+.card-f{padding:12px 18px 16px;border-top:1px solid var(--line)}
+.card-fm{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.card-fm b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.seg{display:flex;gap:4px;margin-top:8px}
+.seg i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.seg i.on{background:var(--ink)}
+
+.road{list-style:none;margin:6px 0 0;padding:0}
+.road li{display:grid;grid-template-columns:2em minmax(0,1fr) auto;gap:10px;align-items:baseline;margin:0;padding:9px 0;border-top:1px solid var(--line)}
+.road li:first-child{border-top:0}
+.road .n{font-size:14px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.road .rt b{display:block;font-weight:600;line-height:1.4}
+.road .rt span{display:block;font-size:13px;color:var(--muted)}
+.road .rs{font-size:13px;color:var(--muted);white-space:nowrap}
+.road .now .n,.road .now .rs{color:var(--accent);font-weight:600}
+.road .done .n,.road .done .rs{color:var(--ok)}
+.road .lock .rt b{color:var(--muted);font-weight:500}
+
+.dock{position:sticky;bottom:0;z-index:5;padding:10px max(16px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:var(--bg);border-top:1px solid var(--line);counter-reset:o}
+.dock:empty{display:none}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;margin:8px 0 0;padding:12px 16px;text-align:left;line-height:1.4;font-size:16px;
+  border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface);cursor:pointer}
+.opt:first-child{margin-top:0}
+.opt:active{background:var(--line)}
+@media (hover:hover){.opt:hover{border-color:var(--muted)}}
+.opt.primary{justify-content:center;background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.opt.primary:active{opacity:.85}
+
+.new{animation:rise .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.toast{position:fixed;left:50%;top:calc(72px + env(safe-area-inset-top));transform:translateX(-50%);max-width:calc(100% - 32px);padding:10px 16px;border-radius:12px;background:var(--me);color:var(--me-ink);font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+.noscript{margin:24px 16px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+@media (prefers-reduced-motion:reduce){.new{animation:none}*{transition:none!important}}
+
+/* 黑白版的排版差异 */
+[data-look=mono] header{border-bottom:2px solid var(--rule)}
+[data-look=mono] .who b{font-size:13px;letter-spacing:.2em;text-transform:uppercase}
+[data-look=mono] .bot .bubble{background:none;box-shadow:none;padding:0;max-width:100%}
+[data-look=mono] .msg.bot{margin:14px 0}
+[data-look=mono] .hello p:first-child{font-size:22px;font-weight:600;line-height:1.4;margin-bottom:4px}
+[data-look=mono] .msg.ask{margin-top:30px;padding-top:14px;border-top:1px solid var(--rule)}
+[data-look=mono] .step{color:var(--ink);font-size:12px;letter-spacing:.06em}
+[data-look=mono] .q{font-size:20px;line-height:1.4;margin-top:6px}
+[data-look=mono] .me .bubble{padding:10px 14px}
+[data-look=mono] .tl{display:inline-block;margin-right:8px;padding:0 6px;font-size:12px;line-height:20px;letter-spacing:.06em;border:1px solid var(--ink);vertical-align:1px}
+[data-look=mono] .tl.t-stop{background:var(--ink);color:var(--bg)}
+[data-look=mono] .tag.official{color:var(--ink);border-color:var(--ink)}
+[data-look=mono] details.rd summary{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
+[data-look=mono] .rules li{grid-template-columns:28px 1fr}
+[data-look=mono] .rules li::before{font:400 22px/1.1 var(--display);color:var(--ink)}
+[data-look=mono] h3{font-size:13px;letter-spacing:.12em}
+[data-look=mono] .card{border:1px solid var(--ink)}
+[data-look=mono] .card-h{background:var(--ink);color:var(--bg);border-bottom:0}
+[data-look=mono] .card-m{color:inherit;opacity:.75}
+[data-look=mono] .verdict{color:inherit}
+[data-look=mono] .verdict::before{border-radius:0}
+[data-look=mono] .rows .w{padding:0 5px;line-height:20px;font-size:12px}
+[data-look=mono] .rows .t-ok .w,[data-look=mono] .rows .t-info .w{color:var(--muted);font-weight:500}
+[data-look=mono] .rows .t-warn .w{border:1px solid var(--ink)}
+[data-look=mono] .rows .t-stop .w{background:var(--ink);color:var(--bg)}
+[data-look=mono] .seg i{height:4px;border-radius:0}
+[data-look=mono] .road li{grid-template-columns:2.4em minmax(0,1fr) auto}
+[data-look=mono] .road .n{font:400 22px/1 var(--display);color:var(--ink)}
+[data-look=mono] .road .done .n{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+[data-look=mono] .road .lock .n{color:var(--muted)}
+[data-look=mono] .road .now .rs{background:var(--ink);color:var(--bg);padding:0 6px;font-size:12px;line-height:20px}
+[data-look=mono] .dock{border-top:1px solid var(--rule)}
+[data-look=mono] .dock.choices .opt{counter-increment:o}
+[data-look=mono] .dock.choices .opt::before{content:counter(o,upper-latin);flex:none;width:1.2em;font:400 17px/1 var(--display)}
+[data-look=mono] .opt{border-color:var(--ink)}
+[data-look=mono] .opt:active{background:var(--ink);color:var(--bg)}
+@media (hover:hover){[data-look=mono] .opt:hover{background:var(--ink);color:var(--bg)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="av" id="av" aria-hidden="true">K</div>
+    <div class="who"><b id="name">kuki</b><span id="sub"></span></div>
+    <button class="restart" id="restart" type="button">重来</button>
+  </header>
+  <noscript><div class="noscript">这个页面需要脚本才能用。请用 Chrome、Safari 或 Edge 打开；在微信里的话，点右上角「…」，选「在浏览器打开」。</div></noscript>
+  <main id="log" aria-label="和 kuki 的对话"></main>
+  <div class="dock" id="dock"></div>
+</div>
+<div class="sr" id="live" aria-live="polite"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>window.GUIDE={"meta": {"title": "Oracle 免费服务器上手指南", "updated": "2026-11-20", "edition": "第 1 版"}, "config": {"friend": "", "helper": "kuki", "region": "Germany Central (Frankfurt)", "regionWhy": "欧洲用着快；法兰克福有 3 个可用区，抢 ARM 机的机会比只有 1 个可用区的地方多", "backupRegion": "UK South (London)", "unlockedPhase": 1, "storageKey": "default"}, "tags": {"official": "Oracle 官方", "community": "网上经验", "helper": "{helper} 的判断", "todo": "待核实"}, "rules": [{"t": "一人只能有一个账号", "d": "以前注册过就用旧的，不要再开新号；也不要用家人的卡或身份。", "tag": "official"}, {"t": "注册时关掉 VPN 和代理", "d": "人在国内就用手机热点。", "tag": "community"}, {"t": "信息全部真实", "d": "名字、地址和卡上的一致，卡是你本人的。", "tag": "official"}, {"t": "密码和私钥只留在你手里", "d": "密码、私钥、验证码、备用码不发给任何人，包括 {helper}。", "tag": "helper"}, {"t": "被拒两次就停", "d": "不要换卡、换邮箱反复试，截图发给 {helper} 再商量。", "tag": "helper"}, {"t": "不升级付费", "d": "Oracle 原话：不升级，卡就不会被扣钱。这套流程用不到付费账号。", "tag": "helper"}], "promise": {"will": ["在你的小机器上临时放一把 SSH 公钥，帮你装好重试脚本", "请你在控制台加一把 API 公钥（公钥不是密码）"], "wont": ["要你的密码、私钥、验证码", "用自己的机器或网络替你登录、替你发请求"], "after": "抢到当天，删掉 API 公钥和 {helper} 的 SSH 公钥，当着你的面做。"}, "phases": [{"id": "p0", "title": "先看看自己的情况", "who": "你自己", "time": "10 分钟", "intro": "回答几个问题，每题点一个选项，马上告诉你该怎么办。做完生成一张小卡片，截图发给 {helper}。", "steps": [{"id": "account", "type": "choice", "q": "你以前注册过 Oracle Cloud 吗？", "hint": "包括几年前试用过、用别的邮箱注册过、注册到一半没成功的。", "options": [{"v": "no", "label": "没有，从来没有", "tone": "ok", "reply": "好，从零开始。"}, {"v": "has", "label": "注册过，有账号", "tone": "info", "reply": "那就不要再注册新号。Oracle 规定一人只能有一个免费账号。先登录旧账号看看里面有什么，看下一步。"}, {"v": "unsure", "label": "不确定", "tone": "warn", "reply": "在你用过的每个邮箱里搜 oracle 和 oraclecloud。搜到 Oracle Cloud 的欢迎邮件，就是注册成功过，回来改选「注册过」；什么都搜不到再改选「没有」。"}, {"v": "rejected", "label": "试过，但被拒了", "tone": "warn", "reply": "告诉 {helper} 大概哪一年、用的哪张卡、当时页面上写了什么。这会影响这次怎么做。"}], "short": "以前注册过"}, {"id": "old", "type": "task", "showIf": {"account": ["has"]}, "title": "登录旧账号，看三样东西，截图发给 {helper}", "how": ["登录 cloud.oracle.com，要填 Cloud Account Name（账号名，不是邮箱）。账号名写在当年 Oracle 发的账号开通邮件里。", "主区域：右上角头像，点「Tenancy: 你的账号名」，页面上写着 Home region。", "账号类型：左上角菜单，Billing & Cost Management，Upgrade and Manage Payment。页面标题是 Upgrade 就是免费账号，是 Manage Payment 就是已经升级付费了。", "已有的机器：左上角菜单，Compute，Instances。右上角区域选主区域，左边 Compartment 换着看一遍。", "截图前遮住邮箱和卡号。"], "tag": "official"}, {"id": "card", "type": "choice", "q": "你打算用哪张卡？", "hint": "必须是你本人名字的卡。注册时会预授权 1 美元左右做验证，不是扣款；Oracle 马上撤销，银行多久退回看银行。", "options": [{"v": "credit", "label": "信用卡（carta di credito）", "tone": "ok", "reply": "最好。Oracle 官方接受信用卡。"}, {"v": "debit", "label": "借记卡（carta di debito）", "tone": "warn", "reply": "Oracle 只收刷卡时不用输 PIN 的 Visa、Mastercard、Amex、Discover 借记卡，能不能过要试了才知道。有信用卡就优先用信用卡。"}, {"v": "prepaid", "label": "PostePay、预付卡或虚拟卡", "tone": "stop", "reply": "这类卡 Oracle 明确不收（虚拟卡、一次性卡、预付卡都不行）。PostePay 是预付卡（carta prepagata）。需要换一张实体信用卡或借记卡。"}, {"v": "unsure", "label": "不确定是哪种", "tone": "warn", "reply": "看银行 App 里的卡片说明：写 credito 是信用卡，debito 是借记卡，prepagata 是预付卡。"}], "short": "卡"}, {"id": "sca", "type": "choice", "q": "这张卡网上付款时，银行怎么让你确认？", "hint": "注册时银行可能会要你确认一下（3D Secure）。人在国内的话，这一步最容易卡住。", "options": [{"v": "app", "label": "在银行 App 里点确认", "tone": "ok", "reply": "注册前打开银行 App，确认现在能正常登录、能收到推送。"}, {"v": "sms", "label": "短信验证码", "tone": "warn", "reply": "确认绑定的手机号现在能收到短信。人在国内用意大利号的话，要开着国际漫游。"}, {"v": "unsure", "label": "不知道", "tone": "warn", "reply": "在银行 App 里找 3D Secure 或 pagamenti online 的设置，或者问一下银行。"}], "short": "银行确认"}, {"id": "where", "type": "choice", "q": "你打算在哪里注册？", "hint": "这一题只决定什么时候注册，和选哪个区域无关。", "options": [{"v": "italy", "label": "人在意大利", "tone": "ok", "reply": "最好的情况：用家里的网络，不开 VPN，直接注册。"}, {"v": "cn-soon", "label": "在国内，几周内回意大利", "tone": "info", "reply": "建议回意大利再注册：IP、卡、地址、手机号都在一个国家，最干净。这是 {helper} 的判断，Oracle 没有公开这方面的规则。等的时候先把第 1 关准备好。"}, {"v": "cn-long", "label": "在国内，还要待很久", "tone": "warn", "reply": "可以在国内注册：不开 VPN，用手机热点，信息全部填真实的意大利信息。被拒两次就停，等回意大利再试。"}], "short": "在哪注册"}, {"id": "use", "type": "choice", "q": "以后几年，你主要在哪里用这台机器？", "hint": "注册时要选一个主区域，选了永远不能改，免费的机器只能开在这个区域。", "options": [{"v": "eu", "label": "主要在欧洲", "tone": "ok", "reply": "{helper} 建议选 {region}。{regionWhy}。"}, {"v": "cn", "label": "主要在国内", "tone": "info", "reply": "告诉 {helper}，区域要另外商量。"}, {"v": "other", "label": "别的地方，或还不确定", "tone": "info", "reply": "不确定就按 {region}。知道以后会长住哪里的话，先告诉 {helper} 再定。"}], "short": "以后在哪用"}, {"id": "email", "type": "choice", "q": "注册打算用哪个邮箱？", "hint": "一个邮箱只能对应一个 Oracle 账号。以后 Oracle 的重要通知都发到这里。", "options": [{"v": "fresh", "label": "从没注册过 Oracle 的邮箱", "tone": "ok", "reply": "好。确认人在国内时也能收信：Gmail 在国内打不开，Outlook 和 iCloud 邮箱一般直接能收。"}, {"v": "used", "label": "用来注册过 Oracle 的邮箱", "tone": "warn", "reply": "那很可能已经有账号了。回到第一题，按「不确定」的方法查一下。"}], "short": "邮箱"}]}, {"id": "p1", "title": "准备好东西", "who": "你自己", "time": "30 分钟", "intro": "注册前一天准备好。每样准备好就勾上。", "steps": [{"id": "c-card", "type": "task", "title": "卡", "how": ["本人名字的信用卡（优先），或刷卡不用输 PIN 的借记卡。", "在有效期内，网上支付已开通。"], "tag": "official"}, {"id": "c-sca", "type": "task", "title": "银行确认能用", "how": ["银行 App 能登录、能收推送；或者手机能收短信。"]}, {"id": "c-addr", "type": "task", "title": "地址", "how": ["和这张卡在银行登记的地址一致，带邮编。"], "tag": "community"}, {"id": "c-email", "type": "task", "title": "邮箱", "how": ["没注册过 Oracle，人在哪里都能收信，记得密码。"]}, {"id": "c-phone", "type": "task", "title": "手机号", "how": ["填你自己的号码，和地址在同一页。", "Oracle 官方的注册步骤里没有短信验证码这一步。"], "tag": "official"}, {"id": "c-auth", "type": "task", "title": "验证器 App", "how": ["第一次登录 Oracle 必须绑定验证器，以后每次登录都要用。", "装 Oracle Mobile Authenticator，或任何能生成 6 位动态码的 App（官方举例 Google Authenticator）。先确认手机的应用商店里下得到。"], "tag": "official"}, {"id": "c-pc", "type": "task", "title": "电脑", "how": ["用你自己的电脑注册，不用手机。浏览器用最新版的 Chrome、Edge 或 Safari。"]}, {"id": "c-net", "type": "task", "title": "网络", "how": ["关掉 VPN 和所有代理。人在国内就用手机热点。"], "tag": "community"}, {"id": "c-name", "type": "task", "title": "想好账号名", "how": ["Cloud Account Name，以后登录要用。用小写英文字母和数字，页面会提示具体规则。"]}, {"id": "c-call", "type": "task", "title": "约时间", "how": ["和 {helper} 约 30 分钟，视频通话共享屏幕，一起注册。"]}]}, {"id": "p2", "title": "注册账号", "who": "你操作，{helper} 视频陪着", "time": "20 到 30 分钟", "intro": "全程用你自己的电脑和网络。{helper} 只看屏幕、告诉你点哪里。", "steps": [{"id": "s-open", "type": "task", "title": "打开注册页", "how": ["打开 signup.oraclecloud.com（或者 oracle.com/cloud/free，点 Start for free）。"], "tag": "official"}, {"id": "s-basic", "type": "task", "title": "基本信息", "how": ["国家选 Italy，名字按卡上的拼写填，填邮箱。", "点 I am human 过人机验证，再点 Verify my email。", "30 分钟内去邮箱点确认链接，过期要重发。"], "tag": "official"}, {"id": "s-region", "type": "task", "title": "账号名、密码、主区域", "how": ["设密码，起账号名（Cloud Account Name）。", "主区域（Home Region）选 {region}。选了就永远不能改，点之前和 {helper} 再对一遍。"], "tag": "official"}, {"id": "s-addr", "type": "task", "title": "地址和手机号", "how": ["和第 1 关准备的一致。"], "tag": "official"}, {"id": "s-pay", "type": "task", "title": "加卡", "how": ["点 Add payment verification method，选 Credit Card，填卡，点 Finish。", "银行可能让你在 App 或短信里确认一下，确认就行。这是 1 美元左右的验证预授权，不是扣款。"], "tag": "official"}, {"id": "s-done", "type": "task", "title": "同意条款，提交", "how": ["勾选同意条款，点 Start my free trial。", "等 Oracle 发账号开通的邮件，可能要几分钟到几小时。这封邮件里有账号名，留好。"], "tag": "community"}, {"id": "s-mfa", "type": "task", "title": "第一次登录：绑验证器、存备用码", "how": ["按提示点 Enable Secure Verification，选 Mobile App，用验证器扫码。用的不是 Oracle 自己的 App 时，选 Offline Mode or Use Another Authenticator App。", "绑好马上生成备用码：右上角头像，User settings，Security，Bypass codes，Generate。抄在纸上，或存进密码管理器。", "手机丢了只能找 Oracle 在线客服重置，不保证成功，所以备用码一定要存。"], "tag": "official"}, {"id": "s-trial", "type": "task", "title": "知道试用期是怎么回事", "how": ["前 30 天送 300 美元试用额度。这期间只开免费的东西。", "30 天后，用额度开的收费资源会被 Oracle 收回；免费的机器不受影响。不升级，卡就不会被扣钱。"], "tag": "official"}, {"id": "s-fail", "type": "task", "title": "如果被拒", "how": ["把页面提示截图发给 {helper}。最多试两次，不换卡、不换邮箱反复试。"]}]}, {"id": "p3", "title": "开第一台小机器", "who": "{helper} 带你做", "time": "15 分钟", "intro": "先开一台免费的小机器（1 GB 内存）。它马上就能用；后面自动抢 ARM 机的脚本也在这台上跑，用的是你自己的账号和 IP。", "steps": [{"id": "m-shape", "type": "task", "title": "选机型", "how": ["Compute，Instances，Create instance。", "Shape 选 VM.Standard.E2.1.Micro，系统选 Ubuntu 24.04。"]}, {"id": "m-net", "type": "task", "title": "网络", "how": ["新建 VCN 和公网子网，勾选分配公网 IPv4。"]}, {"id": "m-key", "type": "task", "title": "SSH 钥匙", "how": ["在你电脑上生成一对钥匙，{helper} 会给你一条命令。私钥留在你电脑上。", "SSH keys 那一栏选上传公钥文件，按住 Command（Mac）或 Ctrl（Windows），同时选你的公钥和 {helper} 发来的临时公钥（都是 .pub 文件）。"], "tag": "official"}, {"id": "m-disk", "type": "task", "title": "硬盘用默认大小", "how": ["不要调大。免费的硬盘一共 200 GB，要给 ARM 机留空间。"], "tag": "official"}]}, {"id": "p4", "title": "手动试一次 ARM 机", "who": "你自己", "time": "5 分钟", "intro": "运气好的话手动就能建成，后面就不用等了。", "steps": [{"id": "a-try", "type": "task", "title": "建一台", "how": ["Create instance，Shape 选 Ampere 下的 VM.Standard.A1.Flex，调成 2 OCPU、12 GB 内存。", "系统选 Ubuntu 24.04 aarch64，网络选刚才那个 VCN 和公网子网。"], "tag": "official"}, {"id": "a-ad", "type": "task", "title": "三个可用区都试一遍", "how": ["提示 Out of capacity（没货）很正常。换一个 AD（可用区）再点，三个都试一遍。", "真建成了就截图告诉 {helper}。"]}]}, {"id": "p5", "title": "让脚本自动抢", "who": "{helper} 来做，你做一步", "time": "几天到几周", "intro": "脚本每 3 分钟替你点一次「创建」，抢到为止。", "steps": [{"id": "r-setup", "type": "task", "title": "{helper} 装脚本", "how": ["{helper} 登录你的小机器，装好开源的重试脚本。"]}, {"id": "r-api", "type": "task", "title": "你加一把 API 公钥", "how": ["右上角头像，User settings（有的版本叫 My profile），Tokens and keys，Add API key，选 Paste a public key，贴 {helper} 发来的公钥，点 Add。菜单名字在不同版本里不太一样，到时候共享屏幕找。", "把弹出的配置预览复制给 {helper}，里面没有密码和私钥。"], "tag": "official"}, {"id": "r-wait", "type": "task", "title": "等", "how": ["{helper} 上次自己抢用了约 8 天（那个区域只有 1 个可用区）。", "等的时候不要动这台小机器和网络。超过 4 周还没抢到，一起商量要不要停。"]}]}, {"id": "p6", "title": "抢到当天", "who": "一起做", "time": "15 分钟", "intro": "当天做完，不拖。", "steps": [{"id": "d-check", "type": "task", "title": "确认真的有了", "how": ["Compute，Instances 里看到新的 ARM 机，状态 Running，能登录。"]}, {"id": "d-stop", "type": "task", "title": "{helper} 停掉脚本", "how": []}, {"id": "d-api", "type": "task", "title": "你删掉 API 公钥", "how": ["回到同一个页面，勾选那把钥匙，Delete，确认。"], "tag": "official"}, {"id": "d-ssh", "type": "task", "title": "{helper} 删掉自己的 SSH 公钥", "how": ["两台机器上都删，共享屏幕给你看。"]}, {"id": "d-micro", "type": "task", "title": "小机器留不留", "how": ["小机器也免费，可以留着用，也可以删掉。"]}]}, {"id": "p7", "title": "长期保持", "who": "你自己，偶尔看看", "time": "每月 5 分钟", "intro": "免费的机器会被回收，账号丢了也没人能帮你找回，所以要照顾一下。", "steps": [{"id": "k-idle", "type": "task", "title": "机器别闲着", "how": ["连续 7 天 CPU、网络、内存都用得很少的免费机器会被 Oracle 回收。", "{helper} 会放一个占资源很少的常驻程序；你自己用起来更好。"], "tag": "official"}, {"id": "k-login", "type": "task", "title": "每月登录一次", "how": ["登录控制台看一眼，留意 Oracle 的邮件，尤其是说要停用或回收的。", "Oracle 没有说清怎样算在用，每月登录是保险做法。"], "tag": "helper"}, {"id": "k-keep", "type": "task", "title": "存好这几样", "how": ["账号名、密码、验证器备用码、SSH 私钥。", "免费账号不能提交工单，验证器丢了只能找在线客服重置，不保证成功。"], "tag": "official"}, {"id": "k-pay", "type": "task", "title": "不升级、不开收费的东西", "how": ["ARM 机在控制台可能不显示 Always Free 标志，{helper} 的那台也是这样，含义还没查清，升级前务必先问。"], "tag": "helper"}]}], "ledger": [{"id": "l-date", "label": "注册日期", "ph": "例如 2026-12-05"}, {"id": "l-region", "label": "主区域", "ph": "例如 Frankfurt"}, {"id": "l-name", "label": "账号名", "ph": "Cloud Account Name"}, {"id": "l-micro", "label": "小机器建好", "ph": "日期"}, {"id": "l-run", "label": "脚本开始", "ph": "日期"}, {"id": "l-got", "label": "抢到", "ph": "日期"}, {"id": "l-note", "label": "备注", "ph": "不要写密码"}], "sources": [{"t": "Oracle：Always Free 资源说明", "u": "https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm"}, {"t": "Oracle：Free Tier 说明（试用额度、不升级不扣款）", "u": "https://docs.oracle.com/iaas/Content/FreeTier/freetier.htm"}, {"t": "Oracle：注册步骤", "u": "https://docs.oracle.com/en-us/iaas/Content/GSG/Tasks/signingup_topic-Sign_Up_for_Free_Oracle_Cloud_Promotion.htm"}, {"t": "Oracle：第一次登录与验证器", "u": "https://docs.oracle.com/iaas/Content/GSG/Tasks/signingin_topic-Signing_In_for_the_First_Time.htm"}, {"t": "Oracle：第三方验证器 App", "u": "https://docs.oracle.com/en-us/iaas/Content/Identity/mfa/learn-using-mobile-authenticator-app-mfa.htm"}, {"t": "Oracle：生成备用码", "u": "https://docs.oracle.com/en-us/iaas/Content/Identity/usersettings/generate-bypass-code.htm"}, {"t": "Oracle：卡的预授权与升级", "u": "https://docs.oracle.com/iaas/Content/Billing/Tasks/changingpaymentmethod.htm"}, {"t": "Oracle：区域与可用区", "u": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"}, {"t": "重试脚本（开源）", "u": "https://github.com/mohankumarpaluru/oracle-freetier-instance-creation"}]};</script>
+<script>/* 三个版本共用：模板替换、本地存档、进度汇总、复制。内容在 content.json，构建时内联。 */
+(function () {
+  var G = window.GUIDE, C = G.config;
+  function fill(s) {
+    return String(s == null ? "" : s).replace(/\{(\w+)\}/g, function (m, k) {
+      if (k === "friend") return C.friend || "你";
+      return C[k] != null ? C[k] : m;
+    });
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  /* 用本地日期：toISOString 是 UTC，北京时间早上 8 点前会差一天 */
+  function today() {
+    var d = new Date();
+    function p(n) { return (n < 10 ? "0" : "") + n; }
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+  }
+  var KEY = "oracle-guide:" + (C.storageKey || "default");
+  var store = {
+    load: function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } },
+    save: function (s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} },
+    clear: function () { try { localStorage.removeItem(KEY); } catch (e) {} }
+  };
+  function visible(step, answers) {
+    if (!step.showIf) return true;
+    return Object.keys(step.showIf).every(function (k) { return step.showIf[k].indexOf(answers[k]) >= 0; });
+  }
+  function option(step, v) {
+    for (var i = 0; i < step.options.length; i++) if (step.options[i].v === v) return step.options[i];
+    return null;
+  }
+  function counts(phase, st) {
+    var a = st.answers || {}, d = st.done || {}, total = 0, done = 0;
+    phase.steps.forEach(function (s) {
+      if (!visible(s, a)) return;
+      total++;
+      if (s.type === "choice" ? a[s.id] : d[s.id]) done++;
+    });
+    return { done: done, total: total };
+  }
+  function summary(st) {
+    var a = st.answers || {}, lines = [];
+    lines.push("【" + G.meta.title + "】" + (C.friend ? C.friend + " " : "") + today());
+    G.phases.forEach(function (p, i) {
+      var c = counts(p, st);
+      if (!c.done) return;
+      lines.push("");
+      lines.push("第 " + i + " 关 " + fill(p.title) + "（" + c.done + "/" + c.total + "）");
+      p.steps.forEach(function (s) {
+        if (s.type !== "choice" || !a[s.id]) return;
+        var o = option(s, a[s.id]);
+        if (!o) return;
+        var mark = { ok: "✓", info: "·", warn: "!", stop: "✕" }[o.tone] || "·";
+        lines.push(mark + " " + (s.short || fill(s.q)) + "：" + o.label);
+      });
+    });
+    var L = st.ledger || {}, rows = G.ledger.filter(function (f) { return L[f.id]; });
+    if (rows.length) {
+      lines.push("");
+      rows.forEach(function (f) { lines.push(f.label + "：" + L[f.id]); });
+    }
+    return lines.join("\n");
+  }
+  /* 先用剪贴板 API；不行就用隐藏文本框（iOS 需要 readonly 加 setSelectionRange 才选得中） */
+  function copy(text, done) {
+    function fallback() {
+      var ta = document.createElement("textarea"), ok = false;
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:absolute;left:-9999px;top:" + (window.pageYOffset || 0) + "px;font-size:12pt;border:0;padding:0;margin:0";
+      document.body.appendChild(ta);
+      try { ta.select(); ta.setSelectionRange(0, text.length); ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      done(ok);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, fallback);
+    } else fallback();
+  }
+  window.GuideCore = { G: G, C: C, fill: fill, esc: esc, today: today, store: store, visible: visible, option: option, counts: counts, summary: summary, copy: copy };
+})();
+</script>
+<script>
+(function(){
+var K=GuideCore,G=K.G,C=K.C,f=K.fill,esc=K.esc;
+function $(i){return document.getElementById(i)}
+var st=K.store.load();st.answers=st.answers||{};st.done=st.done||{};
+var log=$("log"),dock=$("dock"),live=$("live");
+var reduce=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+var prev=-1,viaKey=false,cardEl=null;
+var LABEL={warn:"注意",stop:"先停一下"};
+var WORD={ok:"可以",info:"提示",warn:"注意",stop:"先停"};
+$("av").textContent=(C.helper||"K").charAt(0).toUpperCase();
+$("name").textContent=C.helper;
+$("sub").innerHTML='Oracle 免费服务器 · <span class="nw">自查约 10 分钟</span>';
+log.setAttribute("aria-label","和 "+C.helper+" 的对话");
+function save(){K.store.save(st)}
+function pad(i){return(i<10?"0":"")+i}
+function node(cls,html,bcls,tagName){var m=document.createElement("div");m.className="msg "+cls;
+  var b=document.createElement(tagName||"div");b.className="bubble "+(bcls||"");b.innerHTML=html;m.appendChild(b);return m}
+function tag(t){return t?'<span class="tag '+t+'">'+esc(f(G.tags[t]))+"</span>":""}
+function me(text,undo){
+  var m=node("me",'<span>'+esc(text)+'</span><span class="edit" aria-hidden="true">改</span>',"","button"),b=m.firstChild;
+  b.type="button";b.setAttribute("aria-label","改这一题，现在选的是："+text);
+  b.onclick=function(e){viaKey=e.detail===0;undo();st.card=false;save();render({toEnd:true})};return m}
+function rules(){return '<details class="rd"><summary>开始前，先看 '+G.rules.length+' 条红线</summary><ol class="rules">'+G.rules.map(function(r){
+  return "<li><span><b>"+esc(f(r.t))+"</b>"+tag(r.tag)+'<span class="d">'+esc(f(r.d))+"</span></span></li>"}).join("")+"</ol></details>"}
+function task(s){return "<h3>"+esc(f(s.title))+tag(s.tag)+"</h3><ol>"+s.how.map(function(h){return "<li>"+esc(f(h))+"</li>"}).join("")+"</ol>"}
+function swapCard(){if(!st.card||!cardEl||!cardEl.parentNode)return;var c=card();cardEl.parentNode.replaceChild(c,cardEl);cardEl=c}
+function checklist(p){
+  var m=node("bot","<h3>第 1 关 · "+esc(f(p.title))+'</h3><p class="hint">'+esc(f(p.intro))+"</p>","wide"),b=m.firstChild,cnt=document.createElement("p");cnt.className="count";
+  p.steps.forEach(function(s){
+    var l=document.createElement("label");l.className="check";
+    l.innerHTML='<input type="checkbox" data-t="'+s.id+'"'+(st.done[s.id]?" checked":"")+'><span><b>'+esc(f(s.title))+"</b>"+tag(s.tag)+'<span class="cd">'+esc(f(s.how.join(" ")))+"</span></span>";
+    l.firstChild.onchange=function(){st.done[s.id]=this.checked;save();upd();swapCard()};
+    b.appendChild(l)});
+  function upd(){var c=K.counts(p,st);cnt.textContent="已准备 "+c.done+" / "+c.total+(c.done===c.total?"，可以约 "+C.helper+" 注册了":"")}
+  upd();b.appendChild(cnt);return m}
+function card(){
+  var a=st.answers,rows=[],n={ok:0,info:0,warn:0,stop:0};
+  G.phases[0].steps.forEach(function(s){if(s.type!=="choice"||!K.visible(s,a)||!a[s.id])return;
+    var o=K.option(s,a[s.id]);if(!o)return;n[o.tone]++;
+    rows.push('<li class="t-'+o.tone+'"><span class="k">'+esc(s.short||f(s.q))+'</span><span class="v">'+esc(o.label)+'</span><span class="w">'+WORD[o.tone]+"</span></li>")});
+  var v=n.stop?["stop","有 "+n.stop+" 项要先解决"]:n.warn?["warn","有 "+n.warn+" 项要先确认"]:n.info?["info","都没问题，有 "+n.info+" 条要记住"]:["ok","都没问题，可以准备注册"];
+  var c1=K.counts(G.phases[1],st),seg="";for(var i=0;i<c1.total;i++)seg+="<i"+(i<c1.done?' class="on"':"")+"></i>";
+  return node("bot",'<section class="card" aria-label="自查卡"><div class="card-h"><div class="card-m"><span>自查卡</span><span>'+K.today()+"</span></div><b>"+(C.friend?esc(C.friend)+" 的":"我的")+' Oracle 准备情况</b><p class="verdict t-'+v[0]+'">'+v[1]+'</p></div><ul class="rows">'+rows.join("")+'</ul><div class="card-f"><div class="card-fm"><span>第 1 关准备</span><b>'+c1.done+" / "+c1.total+'</b></div><div class="seg" aria-hidden="true">'+seg+"</div></div></section>","wide bare")}
+function road(){var cur=-1;
+  var items=G.phases.map(function(p,i){var c=K.counts(p,st),cls=c.total&&c.done===c.total?"done":"";
+    if(!cls&&cur<0){cur=i;cls="now"}else if(!cls&&i>C.unlockedPhase)cls="lock";
+    var rs=cls==="done"?"完成":cls==="now"?"现在":"";
+    return '<li class="'+cls+'"><span class="n">'+pad(i)+'</span><span class="rt"><b>'+esc(f(p.title))+"</b><span>"+esc(f(p.who))+" · "+esc(p.time)+"</span></span>"+(rs?'<span class="rs">'+rs+"</span>":"<span></span>")+"</li>"});
+  return '<h3>整条路线</h3><ol class="road">'+items.join("")+"</ol>"}
+function promise(){var P=G.promise;return "<h3>"+esc(C.helper)+" 会做什么</h3><ul>"+P.will.map(function(x){return"<li>"+esc(f(x))+"</li>"}).join("")+
+  '</ul><h3 style="margin-top:12px">不会做什么</h3><ul>'+P.wont.map(function(x){return"<li>"+esc(f(x))+"</li>"}).join("")+'</ul><p class="hint">'+esc(f(P.after))+"</p>"}
+function render(opt){
+  opt=opt||{};
+  var n=[],a=st.answers,acts=null,choice=false,p0=G.phases[0],choices=p0.steps.filter(function(s){return s.type==="choice"}),qi=0,stop=false;
+  cardEl=null;
+  n.push(node("bot hello","<p>你好"+(C.friend?" "+esc(C.friend):"")+"，我是 "+esc(C.helper)+"。</p><p>想拿一台 Oracle 的免费服务器，我们一步一步来。先回答几个问题，点下面的选项就行。</p>"+rules(),"wide"));
+  for(var i=0;i<p0.steps.length;i++){var s=p0.steps[i];if(!K.visible(s,a))continue;
+    if(s.type==="choice"){qi++;
+      n.push(node("bot ask",'<p class="step">第 '+qi+" / "+choices.length+' 题</p><p class="q">'+esc(f(s.q))+"</p>"+(s.hint?'<p class="hint">'+esc(f(s.hint))+"</p>":"")));
+      var o=a[s.id]?K.option(s,a[s.id]):null;
+      if(!o){acts=s.options.map(function(o){return{label:o.label,go:function(){a[s.id]=o.v;save();render()}}});choice=true;stop=true;break}
+      n.push(me(o.label,(function(id){return function(){delete a[id]}})(s.id)));
+      n.push(node("bot reply",(LABEL[o.tone]?'<b class="tl t-'+o.tone+'">'+LABEL[o.tone]+"</b>":"")+esc(f(o.reply))));
+    }else{
+      n.push(node("bot",task(s),"wide"));
+      if(!st.done[s.id]){acts=[{label:"看完了，继续",go:function(){st.done[s.id]=true;save();render()}}];stop=true;break}
+      n.push(me("看完了",(function(id){return function(){delete st.done[id]}})(s.id)));
+    }}
+  if(!stop){
+    n.push(node("bot","第 0 关做完了。下面是第 1 关：注册前要准备的东西。准备好一样勾一样，过几天回来接着勾也行，进度存在这个浏览器里。"));
+    n.push(checklist(G.phases[1]));
+    if(!st.card)acts=[{label:"生成我的小卡片",cls:"primary",go:function(){st.card=true;save();render()}}];
+    else{
+      n.push(node("bot",road(),"wide"));n.push(node("bot",promise(),"wide"));
+      n.push(node("bot","最后，截图下面这张卡片发给 "+esc(C.helper)+"，或者点「复制文字」，再到微信里粘贴。"));
+      cardEl=card();n.push(cardEl);
+      acts=[{label:"复制文字，发给 "+C.helper,cls:"primary",go:function(){K.copy(K.summary(st),function(ok){toast(ok?"已复制，去微信粘贴":"复制失败，请直接截图")})}}];
+    }}
+  var first=prev<0;if(first)prev=n.length-1;
+  log.innerHTML="";var fresh=0,said=[];
+  n.forEach(function(x,i){
+    if(!first&&i>=prev){if(!reduce){x.classList.add("new");x.style.animationDelay=(fresh*0.18)+"s"}fresh++;if(x.classList.contains("bot"))said.push(x.textContent)}
+    log.appendChild(x)});
+  var grew=n.length>prev;prev=n.length;
+  dock.innerHTML="";dock.className="dock"+(choice?" choices":"");
+  (acts||[]).forEach(function(o){var b=document.createElement("button");b.type="button";b.className="opt "+(o.cls||"");b.textContent=o.label;
+    b.onclick=function(e){viaKey=e.detail===0;o.go()};dock.appendChild(b)});
+  if(viaKey&&dock.firstChild){try{dock.firstChild.focus({preventScroll:true})}catch(e){}}
+  viaKey=false;
+  if(said.length){live.textContent="";setTimeout(function(){live.textContent=said.join(" ")},80)}
+  var end=function(smooth){window.scrollTo({top:document.documentElement.scrollHeight,behavior:smooth&&!reduce?"smooth":"auto"})};
+  if(first){if(Object.keys(a).length)end(false)}
+  else if(grew)setTimeout(function(){end(true)},fresh*180);
+  else if(opt.toEnd)end(false);
+}
+var tt;function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){e.classList.remove("on")},2200)}
+var rs=$("restart"),rt;
+function disarm(){rs.removeAttribute("data-arm");rs.textContent="重来"}
+rs.onclick=function(){
+  if(!rs.hasAttribute("data-arm")){rs.setAttribute("data-arm","");rs.textContent="确定重来？";clearTimeout(rt);rt=setTimeout(disarm,3000);return}
+  clearTimeout(rt);disarm();st.answers={};st.card=false;save();prev=-1;render();window.scrollTo(0,0);toast("答案清空了，准备清单的勾还留着")};
+render();
+})();
+</script>
+</body>
+</html>

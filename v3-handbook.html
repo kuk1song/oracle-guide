@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="data:,">
+<title>Oracle 上手手册</title>
+<style>
+:root{
+  --paper:#FAF8F3;--ink:#141210;--muted:#6B655D;--line:#E3DDD2;--soft:#F1EDE4;
+  --accent:#C8361C;--ok:#2B6E47;--info:#2B5C8F;--warn:#8A5A10;--stop:#B02A22;
+  --serif:"Songti SC","STSong","Noto Serif SC","Source Han Serif SC","Noto Serif CJK SC",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#12110F;--ink:#ECE7DF;--muted:#A39B90;--line:#2F2B26;--soft:#1C1A17;
+  --accent:#FF6E52;--ok:#7CCB9A;--info:#8DB6E4;--warn:#E6B566;--stop:#F28A80;
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 var(--sans)}
+.page{max-width:680px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top)) 20px 56px}
+.mast{display:flex;justify-content:space-between;gap:12px;font-size:12px;letter-spacing:.12em;color:var(--muted);border-bottom:2px solid var(--ink);padding-bottom:10px}
+.mast b{color:var(--accent);font-weight:700}
+h1{font:700 clamp(32px,9vw,46px)/1.18 var(--serif);letter-spacing:-.01em;margin:26px 0 14px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:17px;color:var(--muted);margin:0 0 26px;max-width:34em}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts div{padding:14px 12px 14px 0}
+.facts div+div{padding-left:12px;border-left:1px solid var(--line)}
+.facts small{display:block;font-size:12px;letter-spacing:.1em;color:var(--accent);font-weight:700}
+.facts p{margin:4px 0 0;font-size:14px;line-height:1.6}
+h2{font:700 22px/1.3 var(--serif);margin:40px 0 12px;display:flex;align-items:baseline;gap:10px}
+h2::after{content:"";flex:1;height:1px;background:var(--line);transform:translateY(-5px)}
+.rules{list-style:none;margin:0;padding:0;counter-reset:r;display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+.rules li{counter-increment:r;padding:12px 0 12px 44px;position:relative;border-top:1px solid var(--line)}
+.rules li::before{content:counter(r);position:absolute;left:0;top:6px;font:700 32px/1 var(--serif);color:var(--accent)}
+.rules b{font-weight:700}
+.rules span:last-child{display:block;font-size:14px;color:var(--muted);line-height:1.6}
+.promise{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:var(--soft);padding:16px 18px;border-radius:4px}
+.promise h4{margin:0 0 4px;font:700 15px/1.4 var(--serif)}
+.promise ul{margin:0;padding-left:18px;font-size:14px}
+.promise p{grid-column:1/-1;margin:0;font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.phase{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:26px 0;border-top:2px solid var(--ink)}
+.num{font:700 44px/1 var(--serif);color:var(--accent);letter-spacing:-.02em}
+.locked .num{color:var(--muted)}
+.ph h3{font:700 22px/1.3 var(--serif);margin:2px 0 2px}
+.meta{margin:0;font-size:13px;letter-spacing:.06em;color:var(--muted)}
+.intro{margin:10px 0 6px}
+.lock{margin:10px 0;font-size:14px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+.item{padding:14px 0;border-top:1px solid var(--line)}
+.item h4{margin:0;font-size:16px;line-height:1.5;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.box{flex:none;width:16px;height:16px;border:1.5px solid var(--ink);border-radius:3px;margin-right:4px}
+.item ol{margin:6px 0 0;padding-left:44px;font-size:15px;color:var(--muted)}
+.item li{margin:2px 0}
+.hint,.cond{margin:4px 0 8px;font-size:14px;color:var(--muted)}
+.cond{color:var(--info)}
+table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+thead th{font-size:12px;letter-spacing:.1em;color:var(--muted);font-weight:600;text-align:left;padding:4px 0;border-bottom:1px solid var(--ink)}
+tbody th{width:38%;text-align:left;vertical-align:top;font-weight:600;padding:8px 10px 8px 0;border-bottom:1px solid var(--line)}
+tbody td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+tbody td b{display:inline-block;margin-right:6px;font-size:12px;font-weight:700;color:var(--c)}
+.t-ok{--c:var(--ok)}.t-info{--c:var(--info)}.t-warn{--c:var(--warn)}.t-stop{--c:var(--stop)}
+.t-stop th{color:var(--stop)}
+.tag{white-space:nowrap;font-size:11px;font-weight:600;letter-spacing:.04em;padding:0 6px;line-height:18px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+.tag.official{color:var(--info);border-color:currentColor}.tag.todo{color:var(--warn);border-color:currentColor}
+.ledger th{width:34%;font-weight:600;padding:12px 10px 12px 0}
+.ledger td{border-bottom:1px solid var(--muted)}
+.foot{margin-top:40px;padding-top:14px;border-top:2px solid var(--ink);font-size:13px;color:var(--muted)}
+.foot ul{padding-left:18px;margin:6px 0}
+.foot a{color:var(--info)}
+@media (max-width:520px){
+  .facts{grid-template-columns:1fr}.facts div+div{border-left:0;padding-left:0;border-top:1px solid var(--line)}
+  .rules,.promise{grid-template-columns:1fr}
+  .phase{grid-template-columns:1fr;gap:4px}.num{font-size:38px}
+  .item ol{padding-left:22px}
+}
+@media print{
+  :root{--paper:#fff;--ink:#000}
+  .page{max-width:none;padding:0}
+  .phase,.item,.rules li{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<article class="page">
+  <div class="mast"><span><b>上手手册</b> · 第 1 版</span><span>2026-11-20</span></div>
+  <h1>一台免费的服务器，<br><em>怎么拿到。</em></h1>
+  <p class="lede">Oracle Cloud 有一档永久免费的服务器。这份手册分 8 关，从你自己先查一下开始，到把机器长期留住。kuki 全程陪着，但所有账号和密码只在你手里。</p>
+  <div class="facts">
+    <div><small>免费的是什么</small><p>2 台小机器（1 GB 内存），加 1 台 ARM 机（2 核 12 GB），一共 200 GB 硬盘，每月 10 TB 流量。<span class="tag official">Oracle 官方</span></p></div>
+    <div><small>要准备什么</small><p>本人名字的信用卡，一个能收信的新邮箱，你自己的电脑。</p></div>
+    <div><small>要多久</small><p>自查 10 分钟，注册半小时。ARM 机常年缺货，要让脚本自动等，kuki 上次等了约 8 天。</p></div>
+  </div>
+  <h2>六条红线</h2>
+  <ol class="rules"><li><b>一人只能有一个账号</b><span class="tag official">Oracle 官方</span><span>以前注册过就用旧的，不要再开新号；也不要用家人的卡或身份。</span></li><li><b>注册时关掉 VPN 和代理</b><span class="tag community">网上经验</span><span>人在国内就用手机热点。</span></li><li><b>信息全部真实</b><span class="tag official">Oracle 官方</span><span>名字、地址和卡上的一致，卡是你本人的。</span></li><li><b>密码和私钥只留在你手里</b><span class="tag helper">kuki 的判断</span><span>密码、私钥、验证码、备用码不发给任何人，包括 kuki。</span></li><li><b>被拒两次就停</b><span class="tag helper">kuki 的判断</span><span>不要换卡、换邮箱反复试，截图发给 kuki 再商量。</span></li><li><b>不升级付费</b><span class="tag helper">kuki 的判断</span><span>Oracle 原话：不升级，卡就不会被扣钱。这套流程用不到付费账号。</span></li></ol>
+  <h2>kuki 会做什么</h2>
+  <div class="promise"><div><h4>会</h4><ul><li>在你的小机器上临时放一把 SSH 公钥，帮你装好重试脚本</li><li>请你在控制台加一把 API 公钥（公钥不是密码）</li></ul></div><div><h4>不会</h4><ul><li>要你的密码、私钥、验证码</li><li>用自己的机器或网络替你登录、替你发请求</li></ul></div><p>抢到当天，删掉 API 公钥和 kuki 的 SSH 公钥，当着你的面做。</p></div>
+  <h2>一关一关来</h2>
+  <section class="phase"><div class="num">00</div><div class="ph"><h3>先看看自己的情况</h3><p class="meta">你自己 · 10 分钟</p><p class="intro">回答几个问题，每题点一个选项，马上告诉你该怎么办。做完生成一张小卡片，截图发给 kuki。</p><div class="item q"><h4>你以前注册过 Oracle Cloud 吗？</h4><p class="hint">包括几年前试用过、用别的邮箱注册过、注册到一半没成功的。</p><table><thead><tr><th>如果你选</th><th>那么</th></tr></thead><tbody><tr class="t-ok"><th>没有，从来没有</th><td><b>可以</b>好，从零开始。</td></tr><tr class="t-info"><th>注册过，有账号</th><td><b>知道了</b>那就不要再注册新号。Oracle 规定一人只能有一个免费账号。先登录旧账号看看里面有什么，看下一步。</td></tr><tr class="t-warn"><th>不确定</th><td><b>注意</b>在你用过的每个邮箱里搜 oracle 和 oraclecloud。搜到 Oracle Cloud 的欢迎邮件，就是注册成功过，回来改选「注册过」；什么都搜不到再改选「没有」。</td></tr><tr class="t-warn"><th>试过，但被拒了</th><td><b>注意</b>告诉 kuki 大概哪一年、用的哪张卡、当时页面上写了什么。这会影响这次怎么做。</td></tr></tbody></table></div><div class="item task"><p class="cond">只有第 0 关第一题选了「注册过」才需要做这一步。</p><h4><span class="box" aria-hidden="true"></span>登录旧账号，看三样东西，截图发给 kuki<span class="tag official">Oracle 官方</span></h4><ol><li>登录 cloud.oracle.com，要填 Cloud Account Name（账号名，不是邮箱）。账号名写在当年 Oracle 发的账号开通邮件里。</li><li>主区域：右上角头像，点「Tenancy: 你的账号名」，页面上写着 Home region。</li><li>账号类型：左上角菜单，Billing &amp; Cost Management，Upgrade and Manage Payment。页面标题是 Upgrade 就是免费账号，是 Manage Payment 就是已经升级付费了。</li><li>已有的机器：左上角菜单，Compute，Instances。右上角区域选主区域，左边 Compartment 换着看一遍。</li><li>截图前遮住邮箱和卡号。</li></ol></div><div class="item q"><h4>你打算用哪张卡？</h4><p class="hint">必须是你本人名字的卡。注册时会预授权 1 美元左右做验证，不是扣款；Oracle 马上撤销，银行多久退回看银行。</p><table><thead><tr><th>如果你选</th><th>那么</th></tr></thead><tbody><tr class="t-ok"><th>信用卡（carta di credito）</th><td><b>可以</b>最好。Oracle 官方接受信用卡。</td></tr><tr class="t-warn"><th>借记卡（carta di debito）</th><td><b>注意</b>Oracle 只收刷卡时不用输 PIN 的 Visa、Mastercard、Amex、Discover 借记卡，能不能过要试了才知道。有信用卡就优先用信用卡。</td></tr><tr class="t-stop"><th>PostePay、预付卡或虚拟卡</th><td><b>先停</b>这类卡 Oracle 明确不收（虚拟卡、一次性卡、预付卡都不行）。PostePay 是预付卡（carta prepagata）。需要换一张实体信用卡或借记卡。</td></tr><tr class="t-warn"><th>不确定是哪种</th><td><b>注意</b>看银行 App 里的卡片说明：写 credito 是信用卡，debito 是借记卡，prepagata 是预付卡。</td></tr></tbody></table></div><div class="item q"><h4>这张卡网上付款时，银行怎么让你确认？</h4><p class="hint">注册时银行可能会要你确认一下（3D Secure）。人在国内的话，这一步最容易卡住。</p><table><thead><tr><th>如果你选</th><th>那么</th></tr></thead><tbody><tr class="t-ok"><th>在银行 App 里点确认</th><td><b>可以</b>注册前打开银行 App，确认现在能正常登录、能收到推送。</td></tr><tr class="t-warn"><th>短信验证码</th><td><b>注意</b>确认绑定的手机号现在能收到短信。人在国内用意大利号的话，要开着国际漫游。</td></tr><tr class="t-warn"><th>不知道</th><td><b>注意</b>在银行 App 里找 3D Secure 或 pagamenti online 的设置，或者问一下银行。</td></tr></tbody></table></div><div class="item q"><h4>你打算在哪里注册？</h4><p class="hint">这一题只决定什么时候注册，和选哪个区域无关。</p><table><thead><tr><th>如果你选</th><th>那么</th></tr></thead><tbody><tr class="t-ok"><th>人在意大利</th><td><b>可以</b>最好的情况：用家里的网络，不开 VPN，直接注册。</td></tr><tr class="t-info"><th>在国内，几周内回意大利</th><td><b>知道了</b>建议回意大利再注册：IP、卡、地址、手机号都在一个国家，最干净。这是 kuki 的判断，Oracle 没有公开这方面的规则。等的时候先把第 1 关准备好。</td></tr><tr class="t-warn"><th>在国内，还要待很久</th><td><b>注意</b>可以在国内注册：不开 VPN，用手机热点，信息全部填真实的意大利信息。被拒两次就停，等回意大利再试。</td></tr></tbody></table></div><div class="item q"><h4>以后几年，你主要在哪里用这台机器？</h4><p class="hint">注册时要选一个主区域，选了永远不能改，免费的机器只能开在这个区域。</p><table><thead><tr><th>如果你选</th><th>那么</th></tr></thead><tbody><tr class="t-ok"><th>主要在欧洲</th><td><b>可以</b>kuki 建议选 Germany Central (Frankfurt)。欧洲用着快；法兰克福有 3 个可用区，抢 ARM 机的机会比只有 1 个可用区的地方多。</td></tr><tr class="t-info"><th>主要在国内</th><td><b>知道了</b>告诉 kuki，区域要另外商量。</td></tr><tr class="t-info"><th>别的地方，或还不确定</th><td><b>知道了</b>不确定就按 Germany Central (Frankfurt)。知道以后会长住哪里的话，先告诉 kuki 再定。</td></tr></tbody></table></div><div class="item q"><h4>注册打算用哪个邮箱？</h4><p class="hint">一个邮箱只能对应一个 Oracle 账号。以后 Oracle 的重要通知都发到这里。</p><table><thead><tr><th>如果你选</th><th>那么</th></tr></thead><tbody><tr class="t-ok"><th>从没注册过 Oracle 的邮箱</th><td><b>可以</b>好。确认人在国内时也能收信：Gmail 在国内打不开，Outlook 和 iCloud 邮箱一般直接能收。</td></tr><tr class="t-warn"><th>用来注册过 Oracle 的邮箱</th><td><b>注意</b>那很可能已经有账号了。回到第一题，按「不确定」的方法查一下。</td></tr></tbody></table></div></div></section><section class="phase"><div class="num">01</div><div class="ph"><h3>准备好东西</h3><p class="meta">你自己 · 30 分钟</p><p class="intro">注册前一天准备好。每样准备好就勾上。</p><div class="item task"><h4><span class="box" aria-hidden="true"></span>卡<span class="tag official">Oracle 官方</span></h4><ol><li>本人名字的信用卡（优先），或刷卡不用输 PIN 的借记卡。</li><li>在有效期内，网上支付已开通。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>银行确认能用</h4><ol><li>银行 App 能登录、能收推送；或者手机能收短信。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>地址<span class="tag community">网上经验</span></h4><ol><li>和这张卡在银行登记的地址一致，带邮编。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>邮箱</h4><ol><li>没注册过 Oracle，人在哪里都能收信，记得密码。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>手机号<span class="tag official">Oracle 官方</span></h4><ol><li>填你自己的号码，和地址在同一页。</li><li>Oracle 官方的注册步骤里没有短信验证码这一步。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>验证器 App<span class="tag official">Oracle 官方</span></h4><ol><li>第一次登录 Oracle 必须绑定验证器，以后每次登录都要用。</li><li>装 Oracle Mobile Authenticator，或任何能生成 6 位动态码的 App（官方举例 Google Authenticator）。先确认手机的应用商店里下得到。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>电脑</h4><ol><li>用你自己的电脑注册，不用手机。浏览器用最新版的 Chrome、Edge 或 Safari。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>网络<span class="tag community">网上经验</span></h4><ol><li>关掉 VPN 和所有代理。人在国内就用手机热点。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>想好账号名</h4><ol><li>Cloud Account Name，以后登录要用。用小写英文字母和数字，页面会提示具体规则。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>约时间</h4><ol><li>和 kuki 约 30 分钟，视频通话共享屏幕，一起注册。</li></ol></div></div></section><section class="phase locked"><div class="num">02</div><div class="ph"><h3>注册账号</h3><p class="meta">你操作，kuki 视频陪着 · 20 到 30 分钟</p><p class="intro">全程用你自己的电脑和网络。kuki 只看屏幕、告诉你点哪里。</p><p class="lock">这一关到时候 kuki 带你做，现在先看看。</p><div class="item task"><h4><span class="box" aria-hidden="true"></span>打开注册页<span class="tag official">Oracle 官方</span></h4><ol><li>打开 signup.oraclecloud.com（或者 oracle.com/cloud/free，点 Start for free）。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>基本信息<span class="tag official">Oracle 官方</span></h4><ol><li>国家选 Italy，名字按卡上的拼写填，填邮箱。</li><li>点 I am human 过人机验证，再点 Verify my email。</li><li>30 分钟内去邮箱点确认链接，过期要重发。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>账号名、密码、主区域<span class="tag official">Oracle 官方</span></h4><ol><li>设密码，起账号名（Cloud Account Name）。</li><li>主区域（Home Region）选 Germany Central (Frankfurt)。选了就永远不能改，点之前和 kuki 再对一遍。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>地址和手机号<span class="tag official">Oracle 官方</span></h4><ol><li>和第 1 关准备的一致。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>加卡<span class="tag official">Oracle 官方</span></h4><ol><li>点 Add payment verification method，选 Credit Card，填卡，点 Finish。</li><li>银行可能让你在 App 或短信里确认一下，确认就行。这是 1 美元左右的验证预授权，不是扣款。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>同意条款，提交<span class="tag community">网上经验</span></h4><ol><li>勾选同意条款，点 Start my free trial。</li><li>等 Oracle 发账号开通的邮件，可能要几分钟到几小时。这封邮件里有账号名，留好。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>第一次登录：绑验证器、存备用码<span class="tag official">Oracle 官方</span></h4><ol><li>按提示点 Enable Secure Verification，选 Mobile App，用验证器扫码。用的不是 Oracle 自己的 App 时，选 Offline Mode or Use Another Authenticator App。</li><li>绑好马上生成备用码：右上角头像，User settings，Security，Bypass codes，Generate。抄在纸上，或存进密码管理器。</li><li>手机丢了只能找 Oracle 在线客服重置，不保证成功，所以备用码一定要存。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>知道试用期是怎么回事<span class="tag official">Oracle 官方</span></h4><ol><li>前 30 天送 300 美元试用额度。这期间只开免费的东西。</li><li>30 天后，用额度开的收费资源会被 Oracle 收回；免费的机器不受影响。不升级，卡就不会被扣钱。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>如果被拒</h4><ol><li>把页面提示截图发给 kuki。最多试两次，不换卡、不换邮箱反复试。</li></ol></div></div></section><section class="phase locked"><div class="num">03</div><div class="ph"><h3>开第一台小机器</h3><p class="meta">kuki 带你做 · 15 分钟</p><p class="intro">先开一台免费的小机器（1 GB 内存）。它马上就能用；后面自动抢 ARM 机的脚本也在这台上跑，用的是你自己的账号和 IP。</p><p class="lock">这一关到时候 kuki 带你做，现在先看看。</p><div class="item task"><h4><span class="box" aria-hidden="true"></span>选机型</h4><ol><li>Compute，Instances，Create instance。</li><li>Shape 选 VM.Standard.E2.1.Micro，系统选 Ubuntu 24.04。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>网络</h4><ol><li>新建 VCN 和公网子网，勾选分配公网 IPv4。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>SSH 钥匙<span class="tag official">Oracle 官方</span></h4><ol><li>在你电脑上生成一对钥匙，kuki 会给你一条命令。私钥留在你电脑上。</li><li>SSH keys 那一栏选上传公钥文件，按住 Command（Mac）或 Ctrl（Windows），同时选你的公钥和 kuki 发来的临时公钥（都是 .pub 文件）。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>硬盘用默认大小<span class="tag official">Oracle 官方</span></h4><ol><li>不要调大。免费的硬盘一共 200 GB，要给 ARM 机留空间。</li></ol></div></div></section><section class="phase locked"><div class="num">04</div><div class="ph"><h3>手动试一次 ARM 机</h3><p class="meta">你自己 · 5 分钟</p><p class="intro">运气好的话手动就能建成，后面就不用等了。</p><p class="lock">这一关到时候 kuki 带你做，现在先看看。</p><div class="item task"><h4><span class="box" aria-hidden="true"></span>建一台<span class="tag official">Oracle 官方</span></h4><ol><li>Create instance，Shape 选 Ampere 下的 VM.Standard.A1.Flex，调成 2 OCPU、12 GB 内存。</li><li>系统选 Ubuntu 24.04 aarch64，网络选刚才那个 VCN 和公网子网。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>三个可用区都试一遍</h4><ol><li>提示 Out of capacity（没货）很正常。换一个 AD（可用区）再点，三个都试一遍。</li><li>真建成了就截图告诉 kuki。</li></ol></div></div></section><section class="phase locked"><div class="num">05</div><div class="ph"><h3>让脚本自动抢</h3><p class="meta">kuki 来做，你做一步 · 几天到几周</p><p class="intro">脚本每 3 分钟替你点一次「创建」，抢到为止。</p><p class="lock">这一关到时候 kuki 带你做，现在先看看。</p><div class="item task"><h4><span class="box" aria-hidden="true"></span>kuki 装脚本</h4><ol><li>kuki 登录你的小机器，装好开源的重试脚本。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>你加一把 API 公钥<span class="tag official">Oracle 官方</span></h4><ol><li>右上角头像，User settings（有的版本叫 My profile），Tokens and keys，Add API key，选 Paste a public key，贴 kuki 发来的公钥，点 Add。菜单名字在不同版本里不太一样，到时候共享屏幕找。</li><li>把弹出的配置预览复制给 kuki，里面没有密码和私钥。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>等</h4><ol><li>kuki 上次自己抢用了约 8 天（那个区域只有 1 个可用区）。</li><li>等的时候不要动这台小机器和网络。超过 4 周还没抢到，一起商量要不要停。</li></ol></div></div></section><section class="phase locked"><div class="num">06</div><div class="ph"><h3>抢到当天</h3><p class="meta">一起做 · 15 分钟</p><p class="intro">当天做完，不拖。</p><p class="lock">这一关到时候 kuki 带你做，现在先看看。</p><div class="item task"><h4><span class="box" aria-hidden="true"></span>确认真的有了</h4><ol><li>Compute，Instances 里看到新的 ARM 机，状态 Running，能登录。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>kuki 停掉脚本</h4></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>你删掉 API 公钥<span class="tag official">Oracle 官方</span></h4><ol><li>回到同一个页面，勾选那把钥匙，Delete，确认。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>kuki 删掉自己的 SSH 公钥</h4><ol><li>两台机器上都删，共享屏幕给你看。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>小机器留不留</h4><ol><li>小机器也免费，可以留着用，也可以删掉。</li></ol></div></div></section><section class="phase locked"><div class="num">07</div><div class="ph"><h3>长期保持</h3><p class="meta">你自己，偶尔看看 · 每月 5 分钟</p><p class="intro">免费的机器会被回收，账号丢了也没人能帮你找回，所以要照顾一下。</p><p class="lock">这一关到时候 kuki 带你做，现在先看看。</p><div class="item task"><h4><span class="box" aria-hidden="true"></span>机器别闲着<span class="tag official">Oracle 官方</span></h4><ol><li>连续 7 天 CPU、网络、内存都用得很少的免费机器会被 Oracle 回收。</li><li>kuki 会放一个占资源很少的常驻程序；你自己用起来更好。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>每月登录一次<span class="tag helper">kuki 的判断</span></h4><ol><li>登录控制台看一眼，留意 Oracle 的邮件，尤其是说要停用或回收的。</li><li>Oracle 没有说清怎样算在用，每月登录是保险做法。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>存好这几样<span class="tag official">Oracle 官方</span></h4><ol><li>账号名、密码、验证器备用码、SSH 私钥。</li><li>免费账号不能提交工单，验证器丢了只能找在线客服重置，不保证成功。</li></ol></div><div class="item task"><h4><span class="box" aria-hidden="true"></span>不升级、不开收费的东西<span class="tag helper">kuki 的判断</span></h4><ol><li>ARM 机在控制台可能不显示 Always Free 标志，kuki 的那台也是这样，含义还没查清，升级前务必先问。</li></ol></div></div></section>
+  <h2>我的记录</h2>
+  <table class="ledger"><tbody><tr><th>注册日期</th><td></td></tr><tr><th>主区域</th><td></td></tr><tr><th>账号名</th><td></td></tr><tr><th>小机器建好</th><td></td></tr><tr><th>脚本开始</th><td></td></tr><tr><th>抢到</th><td></td></tr><tr><th>备注</th><td></td></tr></tbody></table>
+  <div class="foot">
+    <p>标签：「Oracle 官方」有官方原文；「网上经验」来自社区，没有官方说法；「kuki 的判断」是 kuki 自己的判断。主区域建议：Germany Central (Frankfurt)。</p>
+    <ul><li><a href="https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm">Oracle：Always Free 资源说明</a></li><li><a href="https://docs.oracle.com/iaas/Content/FreeTier/freetier.htm">Oracle：Free Tier 说明（试用额度、不升级不扣款）</a></li><li><a href="https://docs.oracle.com/en-us/iaas/Content/GSG/Tasks/signingup_topic-Sign_Up_for_Free_Oracle_Cloud_Promotion.htm">Oracle：注册步骤</a></li><li><a href="https://docs.oracle.com/iaas/Content/GSG/Tasks/signingin_topic-Signing_In_for_the_First_Time.htm">Oracle：第一次登录与验证器</a></li><li><a href="https://docs.oracle.com/en-us/iaas/Content/Identity/mfa/learn-using-mobile-authenticator-app-mfa.htm">Oracle：第三方验证器 App</a></li><li><a href="https://docs.oracle.com/en-us/iaas/Content/Identity/usersettings/generate-bypass-code.htm">Oracle：生成备用码</a></li><li><a href="https://docs.oracle.com/iaas/Content/Billing/Tasks/changingpaymentmethod.htm">Oracle：卡的预授权与升级</a></li><li><a href="https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm">Oracle：区域与可用区</a></li><li><a href="https://github.com/mohankumarpaluru/oracle-freetier-instance-creation">重试脚本（开源）</a></li></ul>
+  </div>
+</article>
+</body>
+</html>
